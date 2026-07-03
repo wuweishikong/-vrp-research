@@ -1,0 +1,1414 @@
+﻿Total pages: 13
+
+===== PAGE 1 =====
+248 IEEE TRANSACTIONS ON AUTOMA TION SCIENCE AND ENGINEERING, VOL. 17, NO. 1, JANUARY 2020
+Ef铿乧ient Routing for Precedence-Constrained
+Package Delivery for Heterogeneous V ehicles
+Xiaoshan Bai ,M i n gC a o , Senior Member , IEEE, Weisheng Y an ,
+and Shuzhi Sam Ge , Fellow, IEEE
+Abstract鈥?This paper studies the precedence-constrained task
+assignment problem for a team of heterogeneous vehicles to
+deliver packages to a set of dispersed customers subject to
+precedence constraints that specify which customers need to be
+visited before which other customers. A truck and a micro drone
+with complementary capabilities are employed where the truck
+is restricted to travel in a street network and the micro drone,
+restricted by its loading capacity and operation range, can 铿倅
+from the truck to perform the last-mile package deliveries. The
+objective is to minimize the time to serve all the customers
+respecting every precedence constraint. The problem is shown
+to be NP-hard, and a lower bound on the optimal time to
+serve all the customers is constructed by using tools from graph
+theory. Then, integrating with a topological sorting technique,
+several heuristic task assignment algorithms are proposed to
+solve the task assignment problem. Numerical simulations show
+the superior performances of the proposed algorithms compared
+with popular genetic algorithms.
+Note to Practitioners 鈥擳his paper presents several task assign-
+ment algorithms for the precedence-constrained package delivery
+for the team of a truck and a micro drone. The truck can carry
+the drone moving in a street network, while the drone completes
+the last-mile package deliveries. The practical contributions of
+this paper are fourfold. First, the precedence constraints on the
+ordering of the customers to be served are considered, which
+enables complex logistic scheduling for customers prioritized
+according to their urgency or importance. Second, the package
+delivery optimization problem is shown to be NP-hard, which
+clearly shows the need for creative approximation algorithms
+to solve the problem. Third, the constructed lower bound on
+the optimal time to serve all the customers helps to clarify
+Manuscript received March 25, 2019; accepted April 26, 2019. Date of
+publication May 29, 2019; date of current version January 9, 2020. This
+paper was recommended for publication by Associate Editor M. Dotoli and
+Editor S. Reveliotis upon evaluation of the reviewers鈥?comments. This work
+was supported in part by the European Research Council under Grant ERC-
+CoG-771687, the Netherlands Organiza tion for Scienti铿乧 Research under
+Grant NWO-vidi-14134, and the Nati onal Natural Science Foundation of
+China under Grant 51579210 and Grant 61633002. (Corresponding author:
+Xiaoshan Bai.)
+X. Bai is with the Faculty of Science and Engineering, University of
+Groningen, 9747 AG Groningen, The Nethe rlands, and also with the School
+of Marine Science and Tec hnology, Northwestern Polytechnical University,
+Xi鈥檃n 710072, China (e-mail: xiaoshan.bai@rug.nl).
+M. Cao is with the Faculty of Science and Engineering, University of
+Groningen, 9747 AG Groningen, The Nethe rlands (e-mail: m.cao@rug.nl).
+W. Y an is with the School of Marine Scie nce and Technology, Northwestern
+Polytechnical University, Xi鈥檃n 710072, China (e-mail: wsyan@nwpu.edu.cn).
+S. S. Ge is with the Department of Electrical and Computer Engineering,
+National University of Singapore, Singapore 117576, and also with the Insti-
+tute for Future (IFF), Qingdao University, Qingdao 266071, China (e-mail:
+samge@nus.edu.sg).
+Color versions of one or more of the 铿乬ures in this article are available
+online at http://ieeexplore.ieee.org.
+Digital Object Identi铿乪r 10.1109/TASE.2019.2914113
+for practitioners the limiting performance of a feasible solution.
+Fourth, the proposed task assignment algorithms are ef铿乧ient
+and can be adapted for real scenarios.
+Index Terms 鈥?Heterogeneous vehicles, heuristic algorithm,
+package delivery, precedence constraints, task assignment, topo-
+logical sorting.
+I. I NTRODUCTION
+T
+HE task assignment problem for one or multiple vehicles
+to visit a set of target locations has been extensively
+investigated in the past years due to its wide applications
+in logistics, terrain mapping, environmental monitoring, and
+disaster rescue [1]鈥揫6]. The problem can be taken as a variant
+of the traveling salesman problem (TSP) or the vehicle routing
+problem (VRP), which are both NP-hard [7], [8]. The TSP
+focuses on designing one route with the minimum length
+for a salesman/vehicle to visit a set of dispersed customers,
+while the VRP aims to employ multiple vehicles to ef铿乧iently
+deliver products/packages to a set of customers. In recent
+years, parcel delivery to customers is facing new challenges
+as e-commerce has grown vastly [9] where the bene铿乼 of
+using micro drones as additional support for package delivery
+has been identi铿乪d [10]. Consequently, some leading retailers
+or distributors, such as Amazon and DHL, have planned to
+employ micro drones for small package deliveries. However,
+micro drones are subjected to short operation range and
+small payload capacity that grea tly restrict their ef铿乧iency to
+function in an autonomous delivery network [11]. To overcome
+the limitations, some investigation has been done to consider
+a heterogeneous team consisting of one carrier truck and
+one micro drone with complementary capabilities [11]鈥揫14].
+In [11], the package delivery problem for the truck and
+the drone has been formulated as an optimal path planning
+problem on a graph, and then, the problem is reduced to
+the generalized TSP . Murray a nd Chu [12] have formulated
+the heterogeneous parcel delivery problem as a mixed-integer
+linear programming problem and further investigated two
+cases: one considers the release and recovery of the drone
+by using the truck, and the other just uses the depot to release
+and recover the drone. Considering the drone鈥檚 operation range
+and capacity constraint, Savuran and Karakaya [13] have
+designed a genetic algorithm (GA) to plan the route for the
+drone deployed on a mobile platform to visit a set of 铿亁ed
+targets. In [14], several worst-case analysis theorems have been
+investigated, revealing the maximum amount of time that could
+1545-5955 漏 2019 I EEE. Personal u se is perm itted, but republication/redistri bution requires IEEE permission.
+See http://www.ieee.org/publications_standards/publications/rights/index.html for more information.
+
+===== PAGE 2 =====
+BAI et al. : EFFICIENT ROUTING FOR PRECEDENCE-CONSTRAINED P ACKAGE DELIVERY FOR HETEROGENEOUS VEHICLES 249
+be saved as a result of using trucks and drones in combination
+rather than employing trucks a lone for delivering packages.
+In [12] and [14], the truck itself is also allowed to deliver
+parcels to customers, which is different from [11].
+In applications such as mach ine scheduling [15], [16],
+vehicle routing [17]鈥揫20], and logistic scheduling [21]鈥揫23],
+requests are often stipulated as precedence constraints. For
+instance, an autonomous assembly line, or a car manufacturing
+system, may require multiple production robots to provide
+service at locations in a given sequence, thus motivating the
+study for spatiotemporal requests [24]. Pezzella et al. [16]
+developed a GA for the 铿俥xible job-shop scheduling problem,
+in which the operations of different jobs are subjected to prece-
+dence constraints (e.g., machine sequences). A mathematical
+programming model and a heuristic algorithm were presented
+in [17] for the combined vehicle routing and scheduling prob-
+lem with time windows and additional temporal constraints.
+A topological sorting technique was integrated with a GA
+to solve the TSP with precedence constraints in [18]. The
+topological sorting technique guarantees that the planned path
+is feasible, while the GA uses a crossover operator, mimicking
+the changes of the moon, to adjust the sequence for visiting
+the target locations. Later on, an improved GA based on
+topological sorting techniques was proposed in [19] to solve
+the precedence-constrained sequencing problems. Only one
+chromosome is needed by the crossover operator to undergo
+the crossover evolution where each chromosome constructs
+a feasible solution to the problem. For the TSP where a
+given subset of targets is required to be visited in some
+prescribed linear order, an algorithm guaranteeing quanti铿乤ble
+performances was designed in [20]. Each subset of targets
+with the linear visiting constraints can be treated as one single
+target, thus leading to the transformation of the TSP subject
+to the precedence constraints in [20] into the standard TSP .
+In logistic scheduling, some customers/target locations can
+have priorities over the others to be served due to their
+interconnections as in the dial-a-ride problem (DARP) [21] and
+the pickup and delivery task assignment problem [22], [23].
+Cordeau and Laporte [21] conducted a review on the DARP ,
+where the pickup and delivery requests for a set of cus-
+tomers need to respect the customers鈥?origins and destinations.
+For the pickup and delivery problem with time windows,
+Ropke and Pisinger [23] designed an ef铿乧ient large neighbor-
+hood search (LNS) heuristic, which consists of two processes,
+namely, the removal process and the inserting process. In the
+inserting process, the basic gr eedy heuristic inserts each of
+several requests, which have previously been removed in
+the removal process, into that vehicle鈥檚 route such that the
+insertion causes the least increase in the value of the objective
+function. A dynamic programming formulation was developed
+in [25] for the precedence-constrained pickup and delivery
+problem with split loads, where all origins to be visited must
+be served before any destination to be visited on each route.
+In these cases, the precedence constraints on the visiting
+sequence of customers have to be respected, and the posi-
+tioning of one customer in the sequence is directly affected
+by the customers who are required to be served earlier. Prece-
+dence constraints have been studied earlier in the so-called
+sequence ordering problem [26], which is also referred to
+as the sequence problem with precedence constraints [27].
+Considering the loading constraint of unmanned aerial vehicles
+and the precedence constraints on multiple visits at one target,
+a GA was proposed for the multi-vehicle task assignment [28].
+Motivated by the existing literature just mentioned,
+we investigate the precedence-constrained heterogeneous
+delivery problem (PCHDP) for which one drone coordinates
+with one truck to ef铿乧iently deliver packages to a set of
+dispersed customers subject to precedence constraints that
+specify which customers need to be visited before which other
+customers. While one would ideally study the problem with
+time delivery deadlines, this pr oblem is hard, and as a result,
+we consider a simpli铿乪d versio n in which there are precedence
+constraints on the delivery order. We 铿乺st investigate the
+feasible deployment patterns for the drone to travel from one
+customer to another in coordination with the truck and then
+obtain the travel cost matrix specifying the feasible minimal
+time for the drone to 铿倅 between each pair of customers.
+Finally, integrating the topological sorting technique [18], [19],
+we design several heuristic task assignment algorithms to
+iteratively put the customers in an ordered manner, respecting
+the precedence constraints. Our main contributions are as
+follows. First, we construct a lower bound on the optimal
+solution by using tools from graph theory after the discussion
+of NP-hardness of the precedence-constrained task assignment
+problem. This lower bound can be used to approximately
+measure the quality of a solution compared with the optimal.
+Second, inspired by the two feasible deployment patterns
+for the drone to travel between two customers with the
+coordination of the truck in [11], we have exploited a different
+feasible deployment pattern. Finally, two heuristic algorithms
+designed in this paper can obtain satisfying solutions within
+short computation time even when the number of customer
+locations is large.
+The rest of this paper is organized as follows. In Section II,
+the formulation of the precedence- constrained package deliv-
+ery for heterogeneous vehicles is given. Section III presents the
+problem analysis, and in Section IV , several task assignment
+algorithms are presented. We show the simulation results in
+Section V and conclude this paper in Section VI.
+II. P
+ROBLEM FORMULA TION
+A. Problem Setup
+To rigorously formulate the problem, the de铿乶ition of the
+arborescence of a digraph in a gra ph theory is 铿乺st introduced.
+De铿乶ition 1 (Arborescence [29]): An arborescence is a
+digraph with a single root from which there is exactly one
+directed path to every other vertex.
+Now, we are ready to de铿乶e the research problem, PCHDP .
+A drone in coordination with a truck is deployed to deliver
+packages to a set of n dispersed customers subject to prece-
+dence constraints that specify which customers need to be
+visited before which other customers. Each customer receives
+one package to be delivered by the drone, and the truck is
+restricted to travel between a set of stopping/street points as
+vertices on a graph describing the topology of a street network.
+
+===== PAGE 3 =====
+250 IEEE TRANSACTIONS ON AUTOMA TION SCIENCE AND ENGINEERING, VOL. 17, NO. 1, JANUARY 2020
+Fig. 1. One illustration on the heterogeneous package delivery problem with
+one drone coordinating with one truck to d eliver parcels to three dispersed
+customers.
+Fig. 2. Digraph G p = (V p, E p) shows the precedence constraints on serving
+7 customer (target) vertices. (a) Di graph in [18]. (b) Simpli铿乪d digraph.
+Each customer can be visited by the drone released from the
+truck from at least one stopping point vertex to ensure that all
+the customers can be served. It is assumed that the truck carries
+enough packages for serving the customers. The objective is
+to minimize the time when the last customer is served while
+satisfying every precedence constraint, and the constraint is
+that the drone can carry only one package each time and
+has a limited operation range. One illustration on the package
+delivery problem without any precedence constraint is shown
+in Fig. 1.
+Remark 1: The motivation for minimizing the time when
+the last customer is served is that the total service time
+when the drone reaches the last customer is considered more
+important than the time when the truck and the drone return
+to the depot to increase the customer satisfaction index.
+B. F ormulation as an Optimization Problem
+Let C ={ c
+1,..., cn} denote the set of indices of the
+customer locations, and the indices of the stopping point
+vertices are denoted by W ={ w1,路路路 ,w m}.L e tw0 denote the
+depot, a special stopping point vertex, where the heterogeneous
+vehicle team is initially located. For each i, k 鈭?I where
+I = W鈭獅w0} and j 鈭?C, the binary decision variable 蟽ijk = 1
+if and only if it is planned that the drone serves customer j by
+directly 铿倅ing from stopping point vertex i and then 铿倅ing to
+stopping point vertex k, and the binary variable yik = 1i fa n d
+only if it is planned that the truck directly travels from stopping
+point vertex i to stopping point vertex k. The position of each
+stopping point vertex, i 鈭?I, is denoted by p(i).L e t d(i, j)
+denote the Euclidean distance between vertices i and j ,a n dt h e
+binary variable pr
+j = 1 if one requires customer r to be visited
+before customer j and pr
+j = 0 if there is no such requirement.
+As shown in Fig. 2(a), the digraph G p = (V p, E p) consists of
+a subset of customer vertices in C and a set of directed edges
+E p showing the precedence constraints among the vertices. It
+can be easily checked that the pr oblem has feasible solutions
+only if no direct cycles exist in G p , i.e., G p is acyclic. It is
+assumed that the drone 铿俰es with a constant speed vd under the
+maximum 铿倅 distance L, and the truck travels with a constant
+speed vt under no travel range constraint.
+The variable t j is employed to represent the time when
+customer j, j 鈭?C, is served, and P(t) is the truck鈥檚 position
+at time t. Then, the problem is to minimize the time for visiting
+all the customer locations
+f = max
+j鈭圕
+t j (1)
+subject to
+
+i,k鈭圛
+蟽ijk = 1, 鈭€ j 鈭?C (2)
+蟽ijk 鈭?yik = 0, 鈭€i, k 鈭?I,鈭€ j 鈭?C (3)
+蟽ijk , yik 鈭坽 0, 1}, 鈭€i, k 鈭?I,鈭€ j 鈭?C
+(4)
+(P(t j 鈭?d(i, j)
+vd
+) 鈭?p(i))蟽ijk = 0, 鈭€i, k 鈭?I,鈭€ j 鈭?C (5)
+(d(i, j) + d( j, k))蟽ijk 鈮?L, 鈭€i, k 鈭?I,鈭€ j 鈭?C (6)
+(tr 鈭?t j) pr
+j 鈮?0, 鈭€r, j 鈭?C. (7)
+Constraint (2) ensures that each customer is served.
+Constraint (3) guarantees that the drone should be recharged
+by the truck after serving each customer. Constraint (5) makes
+sure that the drone鈥檚 path is feasible through coordinating with
+the truck, namely, given 蟽
+ijk = 1, the time that the drone can
+be released from the truck to serve customer j is the moment
+when the truck is at the stopping point vertex i . Constraint (6)
+ensures that the drone鈥檚 铿倅 distance is within its capability.
+Constraint (7) guarantees that the precedence constraints on
+visiting the customers are satis铿乪d.
+Remark 2: In the problem formulation, it is assumed that
+the drone 铿俰es with a constant speed vd constrained by the
+maximum 铿倅 distance L, and the truck travels with a constant
+speed vt without any travel range cons traint. The practicalities
+of the implementation on using trucks and drones under the
+assumptions for package delivery have been discussed in detail
+in [11], [12], [30], and [31].
+After formulating the task assignment problem as a con-
+strained minimization problem, we present the analysis of the
+optimization problem in Section III.
+III. P ROBLEM ANALYSIS
+A. Proof of NP-Hardness
+We can simplify the digraph G p = (V p, E p), specifying
+the precedence constraints on visiting the customer locations,
+whenever the following two conditions hold at the same time:
+1) one customer vertex ci has one edge directly pointing at
+another customer vertex c j and 2) ci has multiple directed
+paths to c j . An example is shown in Fig. 2(a), where customer
+c1 has three independent directed paths to c4 as c1 鈫?c3 鈫?c4,
+c1 鈫?c2 鈫?c4,a n d c1 鈫?c4.S i n c e c2 is required to be
+visited before c4 and c1 is required to be visited before c2,
+
+===== PAGE 4 =====
+BAI et al. : EFFICIENT ROUTING FOR PRECEDENCE-CONSTRAINED P ACKAGE DELIVERY FOR HETEROGENEOUS VEHICLES 251
+Fig. 3. Transformation from the OTSP on graph G to the PCHDP on
+graph G and G p where (a) G = (V, E, D),( b ) G = (V, E, D) with
+D(wi+1,w j+1) = D(vi,v j ),鈭€vi ,v j 鈭?V, D(w0,w 1) = 0, D(ci,w i) = 0
+and D(wi, ci) = 0, 鈭€wi 鈭?V ,a n d( c ) G p .
+the precedence constraint from c1 to c4 becomes redundant.
+Then, after deleting some re dundant precedence constraints,
+the digraph shown in Fig. 2(a) can be simpli铿乪d to Fig. 2(b).
+It can be easily checked that the problem has feasible solutions
+only if no direct cycles exist in G
+p . Thus, we make this
+standing assumption for the rest of this paper.
+Assumption 1: G p is acyclic.
+Now, consider the undirected graph G = (V, E, D) consist-
+ing of a vertex set V = C鈭狪, an edge set E = EC 鈭?EI ,a n da
+cost matrix D that saves the weight of each edge in E. EI is
+a fully connected edge set containing the edge (wi,w k) for
+every pair of stopping point vertices wi,w k 鈭?I. EC contains
+the pairs of 铿俰ght edges (wi, c j ) and (c j,w k) for all c j 鈭?C
+and wi,w k 鈭?I where the drone can 铿倅 from vertex wi to
+serve customer c j a n dt h e nr e t u r nt owk .T h e s ewi vertices
+are called the viable deployment vertices for customer vertex
+c j from which the drone can be released to reach c j and, then,
+the drone can return at least one stopping point vertex wk .T h e
+set Vj is employed to contain all such wi for customer c j .
+Let D = (d(i, j))(m+n+1)脳(m+n+1), i, j 鈭?V ,w h e r e d(i, j)
+speci铿乪s the distance between the two vertices i and j
+associated with the edge (i, j).
+In the graph theory, the open TSP (OTSP) involves deter-
+mining a Hamiltonian path with the minimal length connecting
+in sequence each vertex exactly once in a directed or undi-
+rected graph, and the TSP det ermines a Hamiltonian cycle
+with the minimal length that is a cycle. Determining whether
+such cycles and paths exist in graphs is the NP-complete
+Hamiltonian path problem [32, pp. 199鈥?00]. The requirement
+for the traveling salesman to return to the starting city does
+not change the computational complexity of the problem.
+Therefore, the OTSP is NP-hard as well [33]. Now, we show
+that the optimization problem, PCHDP , is also NP-hard.
+Theorem 1: There exists a set of nonempty precedence con-
+straints for which the preceden ce-constrained task assignment
+problem, PCHDP , is NP-hard.
+Proof: To prove the NP-hardness of the PCHDP , it suf-
+铿乧es to show that: 1) every instance of the OTSP can be
+reduced to an instance of the PCHDP in polynomial time and
+2) an optimal solution to the PCHDP leads to an optimal OTSP
+solution. Let G
+ = (V, E, D) be an input to the OTSP , where
+V ={ v0,v 1,...,v n鈭?} contains the n 鈭?1 dispersed cities to
+be visited and the depot v0 where the traveling salesman is
+initially located. To prove 1), G is transformed into an input
+G = (V, E, D) and G p of the PCHDP as shown in Fig. 3,
+which requires polynomial time.
+We construct the PCHDP where each customer ci 鈭?V, i 鈭?
+{1,..., n} corresponds to the vertex vi鈭? in V,w h e r e ci
+has exactly one unique viable deployment stopping point
+vertex wi . A starting vertex (depot) w0, where the truck
+and the drone start the delivery task, is added to V .F o r
+each edge (vi,v j ) 鈭?E with the weight d(vi,v j ) 鈭?D,
+add directed edges from customer vertex ci+1 to c j+1 as
+(ci+1,w i+1), (wi+1,w j+1),a n d (w j+1, c j+1) into E with the
+weight d(wi+1,w j+1) = d(vi,v j ), while d(ci+1,w i+1) = 0
+and d(w j+1, c j+1) = 0. In addition, add a bidirectional edge
+from w0 to w1 with d(w0,w 1) = 0. Let the truck in the
+PCHDP have the same travel speed as that of the traveling
+salesman in OTSP . Finally, to constructG
+p , let customer vertex
+c1 have precedence constraints on the other customers as the
+directed edges with arrows shown in Fig. 3(c), and there are
+no other precedence constraint s among the customers. Thus,
+the transformation from G
+ to G and G p is constructed, and
+we have obtained the inputs to the PCHDP .
+To prove 2), after the transformation of G to G and G p ,
+it is straightforward to see that an optimal solution to the
+PCHDP is also optimal to the OTSP based on the edge
+weights of the graph G and the precedence constraints among
+the customers, as shown in Fig. 3(b) and Fig. 3(c). From
+Fig. 3(b) and Fig. 3(c), a PCHDP solution is of the form P
+d =
+(w0,w 1, c1,w 1,路路路 ,w n, cn,w n) and Pt = (w0,w 1,路路路 ,w n),
+where Pd is the route of the drone and Pt is the path of the
+truck. The PCHDP solution can be employed to generate an
+OTSP path of the form P = (v0,路路路 ,v n鈭?) by either extract-
+ing the ordered stopping point vertices (w0,w 1,路路路 ,w n)
+from Pd as the truck needs to visit every wi to serve the
+corresponding ci or directly from Pt .I f E P contains the
+optimal sequence of edges in P,t h e n E Pt = E P .S i n c e
+d(w0,w 1) = 0, d(ci,w i) = 0, and d(wi, ci) = 0, it is
+straightforward to check that the shortest time for the drone to
+serve all the customers satis铿乪s 
+e鈭圗 Pd
+d(e) = 
+e鈭圗 P d(e).
+Thus, the proof is complete. 鈻?
+Remark 3: If every customer location only has one prece-
+dence constraint requiring it to be visited either before or after
+another customer location, the resulting problem is a variant of
+the single-vehicle DARP to design one vehicle route to serve
+a set of customers at the required destinations [21].
+B. Lower Bound on the Optimal Solution
+It can be costly to solve the PCHDP optimally due to the
+NP-hardness of the problem. As a consequence, it is natural to
+design heuristic algorithms to 铿乶d suboptimal solutions. Then,
+one issue arises on how to evaluate the quality of a suboptimal
+solution as the optimal is typically unknown. In this section, a
+lower bound on the minimal time for the vehicles to serve all
+the customers while satisfying e very precedence constraint is
+constructed through obtaining a minimum cost arborescence
+(MCA) of a weighted digraph G
+d = (V d, Ed, Dd) by the
+Edmonds鈥?algorithm [34]. The sum of all the edge weights
+of the MCA is minimal among all the arborescences of Gd .
+The vertex set V d = C 鈭獅 w0} consists of the indices of the
+n customer vertices and the depot. The edge set Ed , deduced
+from the digraph G p , contains every directed edge orienting
+
+===== PAGE 5 =====
+252 IEEE TRANSACTIONS ON AUTOMA TION SCIENCE AND ENGINEERING, VOL. 17, NO. 1, JANUARY 2020
+Fig. 4. Three potential micro deploy ment patterns for the drone to serve
+two customers cr and c j successively by the usage of stopping point
+vertices wi and wk . (a) Pattern 伪. (b) Pattern 尾. (c) Pattern 纬 .
+from vertex cr to c j for all cr, c j 鈭?V d if vertex cr can be
+visited before vertex c j . The matrix Dd contains the feasible
+minimal time for the drone to 铿倅 from an arbitrary vertex cr
+to every c j , which is obtained as follows.
+For every customer vertex cr , let the set Vr contain the
+indices of the viable deployment stopping point vertices from
+which the drone is viable to be released to serve cr . Extending
+the two feasible deployment patterns in [11], in Fig. 4, we
+show three potential micro time deployment patterns for the
+drone located at customer vertex c
+r with the remaining 铿倅
+distance Lcr to serve customers c j when the truck is located
+at stopping point vertex wi . The corresponding travel times of
+the drone in the three micro deplo yment patterns are computed,
+respectively
+t伪(cr, c j) = min
+Lcr 鈮(cr,wi),
+鈭€wi 鈭圵,鈭€wk鈭圴 j
+ d(cr,w i)
+vd
++ d(wi,w k)
+vt
++ d(wk, c j)
+vd
+
+; (8)
+t尾(cr, c j) = min
+Lcr 鈮(cr,wi ),
+鈭€wi 鈭圴 j
+d(cr,w i) + d(wi, c j)
+vd
+; (9)
+t纬 (cr, c j) = min
+Lcr 鈮(cr,wk),
+鈭€wk鈭圴 j
+
+max
+ d(cr,w k)
+vd
+, d(wi,w k)
+vt
+
++ d(wk, c j)
+vd
+
+. (10)
+Let Lcr = L 鈭?min鈭€wh鈭圴r d(wh, cr), then the shortest time
+for the drone located at the customer vertex cr to serve c j is
+t(cr, c j) = min{t伪(cr, c j ), t尾(cr, c j), t纬 (cr, c j)} (11)
+which is the weight Dd(cr, c j) for the directed edge
+(cr, c j) 鈭?Ed .
+We give an example on formulating the directed Ed and the
+associated Dd based on the directed G p shown in Fig. 2(b)
+and the corresponding weighted undirected G.Av e r t e xs e tSr
+is used to save the indices of the customer vertices before
+which cr,鈭€cr 鈭?C, can be served. Sr is achieved in a
+backward manner. First, let Sr = C \{ cr},鈭€cr /鈭?V p . Then, in
+Fig. 2(b), S6 is 铿乺st calculated as S6 =鈭?cr 鈭圕\V p cr . Afterward,
+Sr =鈭?pr
+j =1(S j 鈭獅 c j}) where pr
+j = 1 if the customer vertex
+cr has an edge directly pointing at customer vertex c j in the
+simpli铿乪d G p as c1 and c2 in Fig. 2(b). Thus, S7 = S6 鈭獅 c6}.
+Then, Si can be obtained iteratively for every ci 鈭?V d .
+Finally, an edge Ed(cr, c j ) exists connecting vertex cr and
+every c j 鈭?Sr , and the corresponding Dd(cr, c j ) = t(cr, c j)
+saves the shortest feasible time for the drone to travel from
+cr to c j as shown in (11); for the other cases, Dd(cr, c j ) =鈭?.
+Let fa be the sum of all the edge weights of an MCA
+of Gd and fo be the optimal for the objective function
+shown in (1). Now, the property of the optimal solution is
+investigated.
+Proposition 1: It holds that fa 鈮?fo.
+Proof: According to De铿乶ition 1, an optimal path for
+the drone to serve all the customers while respecting all the
+precedence constraints on visiting the customers corresponds
+to an arborescence of the weighted digraph Gd .A s fa is
+the sum of all the edge weights of an MCA of Gd ,i ti s
+straightforward to check that fa 鈮?fo. 鈻?
+Having done the theoretical analysis, we construct several
+heuristic algorithms in Section IV .
+IV . TASK ASSIGNMENT ALGORITHMS
+In this section, we 铿乺st introduce one topological sorting
+technique, based on which we propose three task assignment
+algorithms.
+A. T opology Sorting T echnique
+Through a topological sorting technique, all the feasible
+paths in a directed acyclic graph can be obtained [35].
+In [18] and [19], the precedence-constrained TSP is solved
+by employing a topological sorting technique that iteratively
+sorts the customer vertices in G
+p
+without any predecessor in
+each iteration. Initially, let G p
+= G p . The customer vertices
+without any predecessor are called viable customer vertices ,
+which can be inserted into the TSP path behind the customer
+vertices that are the predecessors of them. Then, the choice
+of which customer vertex among the viable customers to be
+inserted into the TSP path is determined by the task assignment
+principles, which will be presented in Section IV -B. Once
+inserting a viable customer vertex, to update G
+p
+, the customer
+vertex and the precedence cons traints corresponding to the
+edges leaving the customer in the current G p
+are deleted.
+We give an example to show how to construct a TSP path
+to visit all the customers from the representation scheme by
+considering the precedence constraints shown in Fig. 2(b). In
+the digraph, the 铿乺st customer vertex sorted to be inserted into
+the TSP path is c
+1,s i n c ec1 is the only customer in G p
+without
+any predecessor. Then, c1 is stored in the TSP path, and at the
+same time, c1 and the edges (c1, c3) and (c1, c2) originating
+from c1 are deleted from G p
+. In the next iteration, c2 and c3
+are viable customer vertices in the resulting G p
+, which can
+then be inserted into the path after c1. The process continues
+until all the customer vertices in G p are inserted.
+B. T ask Assignment Algorithms
+Using the topological sorting technique in [18] and [19],
+the precedence-constrained pack age delivery task assignment
+problem can be solved by 铿乺st iteratively inserting a viable
+customer vertex into the drone鈥檚 path based on the travel cost
+matrix Dd and then planning the path for the truck to ensure
+
+===== PAGE 6 =====
+BAI et al. : EFFICIENT ROUTING FOR PRECEDENCE-CONSTRAINED P ACKAGE DELIVERY FOR HETEROGENEOUS VEHICLES 253
+that the drone鈥檚 path is feasible, that is, the truck needs to
+release the drone at one stoppi ng point vertex to serve each
+customer and then recharges the drone at one stopping point
+vertex after the customer is served as the drone鈥檚 capacity of
+carrying packages is only one.
+Let R
+l save the indices of the ordered customers already
+inserted into the drone鈥檚 path after iteration l, and the customer
+set T A
+Rl
+contains the indices of those customer vertices that
+have no predecessor in G p
+and have not been inserted after
+iteration l.L e t T j
+Rl
+={ cr 鈭?Rl : (cr, c j) 鈭?E p} for each
+c j 鈭?T A
+Rl
+,a n dt h es e tT j
+a saves the ordered locations in Rl in
+which the customer c j is viable to be inserted while satisfying
+every precedence constraint on visiting c j . Obviously, c j can
+only be inserted into Rl behind all the customer vertices in
+T j
+Rl
+.I f T j
+Rl
+=鈭?, c j is viable to be inserted at any position
+of Rl . For the task assignment algorithms, Rl is initialized as
+{w0} where the drone and the truck are initially located.
+1) Nearest Inserting Algorithm: The 铿乺st heuristic algo-
+rithm is the nearest inserting algorithm (NIA) that puts the
+customer vertices in a sequence based on the time for the
+drone to travel from the customer vertices already inserted
+into the path to the one that can be inserted.
+In iteration l + 1, the NIA 铿乶ds the customer c
+j 鈭?T A
+Rl
+to
+be inserted and the associated inserting position q + 1a s
+(q, c j) = argmin
+q鈭圱 j
+a ,c j 鈭圱 A
+Rl
+t(Rl(q), c j) (12)
+where T j
+a ={ p,..., |Rl|}, p = maxcr 鈭圱 j
+Rl
+铿乶d(Rl = cr)
+铿乶ds the farthest position to the end of Rl after which
+customer c j is viable to be inserted, and Rl(q) is the qth
+ordered customer on the path Rl . The operator 铿乶d (Rl = cr)
+铿乶ds the location in Rl where the customer vertex cr is
+located. Then, the path Rl is updated to
+Rl+1 =
+
+{Rl, c j}, if q =| Rl|
+{Rl(1 : q), c j, Rl(q + 1 :| Rl|)}, otherwise
+(13)
+where |Rl| is the size of Rl and Rl(1 : q) saves the
+ordered customer vertices located between the 铿乺st and the
+q
+th positions of Rl .
+After the insertion of c j , we delete all the edges imply-
+ing the precedence constraints initiating from c j and the
+vertex c j to update G p
+. Then, the topological sorting tech-
+nique is used to achiveve T A
+Rl+1 , which saves the indices of
+viable customer vertices after iteration l + 1. The inserting
+procedures (12) and (13) continue until all the customer
+vertices in C are inserted into the drone鈥檚 path.
+Now, we show an example on how NIA works as follows.
+Assume that the current drone path for visiting the customers
+subject to the precedence constraints shown in Fig. 2(b) is
+Rl ={ c1, c2, c5}. Then, the viable customer set is T A
+Rl
+={ c3}
+as c3 is the only customer without any predecessor after delet-
+ing the customer vertices already in Rl and the corresponding
+edges from G p
+.S i n c ec1 is the only customer that is required
+to be visited before c3, c3 is viable to be inserted at any
+place behind c1. Assume that Rl ={ c1, c3, c2, c5} after the
+insertion of c3. Then, the next viable customer c4 can only
+be inserted after c5 as c5 is required to be visited before c4,
+where q = 4 according to (12). One feasible drone path
+is Rl ={ c1, c3, c2, c5, c4, c7, c6} after iteratively using the
+topological sorting technique and the inserting procedure.
+2) Minimum Marginal-Cost Algorithm: The second task
+assignment algorithm is the minimum marginal-cost algo-
+rithm (MMA), which determines the next customer to be
+inserted and the corresponding inserting position based on the
+marginal travel time incurred by inserting the customer. The
+marginal travel time incurred by inserting customer c
+j at
+the qth, q > 1, position of Rl is approximated by
+t(Rl 鈯晀 c j) 鈭?t(Rl)=
+鈳?
+鈳帹
+鈳帺
+t(Rl(q 鈭?1), c j), if q =| Rl|+ 1
+t(Rl(q 鈭?1), c j) + t(c j, Rl(q))
+鈭抰(Rl(q 鈭?1), Rl(q)), otherwise
+(14)
+where the operation Rl 鈯晀 c j inserts customer c j at the qth
+position of Rl .T a r g e tc j is inserted to the end of Rl if q =
+|Rl|+ 1a n d t(Rl) denotes the total travel time for the drone
+to deliver packages to all the customers in Rl . The incurred
+marginal time can be approximated by the usage of the travel
+cost matrix D
+d shown in (11).
+MMA determines the customer c j 鈭?T A
+Rl
+to be inserted
+into the path Rl and the associated inserting position q in
+iteration l + 1a s
+(q, c j) = argmin
+p+1鈮鈮Rl|+1,c j 鈭圱 A
+Rl
+{t(Rl 鈯晀 c j) 鈭?t(Rl)}
+(15)
+where p = maxcr 鈭圱 j
+Rl
+铿乶d(Rl = cr). Then, the path Rl is
+updated to
+Rl+1 = Rl 鈯晀 c j. (16)
+After the insertion of c j , all the edges implying the prece-
+dence constraints initiating from c j and the vertex c j are
+deleted to update G p
+. The customer inserting process contin-
+ues until all the customers are inserted into the path.
+Remark 4: The MMA and the basic greedy heuristic used
+in the LNS [23] both insert a feasible customer/request into
+a vehicle鈥檚 route with the least incurred increase in the
+value of the objective where the greedy heuristic is given a
+number of partial routes and a number of requests to insert. If
+building the vehicle鈥檚 route from scratch (an empty route) and
+considering the precedence constraints when inserting each
+customer/request, the greedy heuristic will be the same as the
+MMA.
+3) Second-Order Minimum Marginal-Cost Algorithm: The
+customer ordering strategy (15) shows that the customers
+already ordered in the iteration l directly affect the customer
+to be inserted in the next iteration as well as the inserting
+position. To accommodate the future customer to be inserted,
+we propose the second-order MMA (SMMA) that calculates
+the cost incurred by inserting a customer considering both
+the current iteration and the future iteration. For SMMA, the
+
+===== PAGE 7 =====
+254 IEEE TRANSACTIONS ON AUTOMA TION SCIENCE AND ENGINEERING, VOL. 17, NO. 1, JANUARY 2020
+customer c j
+1 to be inserted and its inserting position q
+1 in
+iteration l + 1 satisfy
+c j
+1 = argmin
+p2+1鈮2鈮Rl|+2,
+c j1鈭圱 A
+Rl ,c j2鈭圱 A
+Rl \{c j1}
+{t((Rl 鈯晀
+1 c j1) 鈯晀2 c j2)鈭抰(Rl)}
+(17)
+where q
+1 = argminp1+1鈮1鈮Rl|+1{t(Rl 鈯晀1 c j1) 鈭?t(Rl)},
+p1 = maxcr 鈭圱 j1
+Rl
+铿乶d(Rl = cr),a n d p2 =
+maxcr 鈭圱 j2
+Rl鈯晀
+1
+c j1
+铿乶d(Rl 鈯晀
+1 c j1 = cr). Then, in iteration
+l + 1, the path Rl is updated to
+Rl+1 = Rl 鈯晀
+1 c j
+1 . (18)
+After the insertion of c j
+1 ,t h ev e r t e xc j
+1 and all the edges
+implying the precedence constraints initiating from c j
+1 are
+deleted to update G p
+. The customer inserting process contin-
+ues until all the customers are inserted into the drone鈥檚 path.
+It should be noted that the stopping point vertices used
+for formulating the minimal travel time for the drone to
+铿倅 between each of two customers might not be feasible
+to construct a truck path coordinating with the drone to
+serve all the customers due to the truck鈥檚 limited travel
+speed. To show more detail, let the stopping point vertex
+be w
+r where the drone is released to serve customer cr .
+Then, the feasible shortest time t(cr, c j ) for the drone to
+successively visit customer c j after visiting cr is obtained
+from (8) to (11) where the drone鈥檚 remaining 铿倅 distance
+Lcr is L 鈭?d(wr, cr), thus leading to t(cr, c j) 鈮?t(cr, c j)
+in (11) as L 鈭?d(wr, cr) 鈮?L 鈭?min鈭€wh鈭圴r d(wh, cr).T h i s
+is because a longer remaining 铿倅 distance Lcr would enable
+the drone to have more choices on choosing stopping point
+vertices wi and wk to serve customers cr and c j ,a ss h o w ni n
+Fig. 4. Thus, after achieving the drone鈥檚 path for visiting the
+customers based on the algorithms NIA, MMA, and SMMA,
+Lcr = L 鈭?d(wr, cr) is used to calculate the feasible travel
+time for the drone released from stopping point vertex wr to
+铿倅 directly from customer cr to customer c j while considering
+the truck movement.
+C. Computational Complexity
+In this section, we analyze the computational complexity
+of running NIA, MMA, and SMMA. The three algorithms
+iteratively insert a customer vertex to the drone鈥檚 path whose
+length is |Rl|= l after the lth iteration of the inserting
+operation. The computational complexity of NIA is determined
+by (12) where 铿乶ding p requires at most |T j
+Rl
+||Rl| basic
+operations in the (l + 1)th iteration of the assignment. Thus,
+to 铿乶d q and c j in (12), at most |T j
+a ||T A
+Rl
+||T j
+Rl
+||Rl| basic
+operations are needed in the (l + 1)th iteration, where |T j
+a |鈮?
+|Rl|, |T A
+Rl
+|鈮?n 鈭抾 Rl|,a n d |T j
+Rl
+|鈮 Rl|. As a consequence,
+at most l3(n 鈭?l) basic operations are required in the (l + 1)th
+iteration. Taking the sum for l to change from 1 to n,w eg e t
+the computational complexity of NIA l=n
+l=1 l3(n鈭抣), resulting
+in O(n5). Here, a function f (x) is said to be O(g(x)) if there
+are constants c and x such that f (x) 鈮?cg(x) for all x 鈮?x.
+Similar to NIA, the computational complexity of MMA is
+determined by (15), where at most 2 |Rl||T A
+Rl
+||T j
+Rl
+||Rl| basic
+operations are required in the (l + 1)th iteration. Thus, the
+computational complexity of MMA is also O(n5).
+The computational complexity of the SMMA
+is determined by (17) where 铿乶ding p1 requires
+at most |T j1
+Rl
+||Rl| basic operations, 铿乶ding q
+1
+requires at most 2 |Rl| basic operations, and 铿乶ding
+p2 requires at most |T j2
+Rl鈯晀
+1
+c j1
+||Rl 鈯晀
+1 c j1| basic operations
+in the (l + 1)th iteration of the assignment. Thus, at most
+2|Rl||T A
+Rl
+|(|T A
+Rl
+|鈭?1)(|T j1
+Rl
+||Rl|+ 2|Rl|+| T j2
+Rl鈯晀
+1
+c j1
+||Rl 鈯晀
+1
+c j1|) basic operations are required in the (l + 1)th
+iteration, which is at most 2 l(2l2 + 4l + 1)(n 鈭?l)2.
+Then, we know the computational complexity of SMMA isl=n
+l=1 2l(2l2 + 4l + 1)(n 鈭?l)2,w h i c hi s O(n6).
+By integrating with the topology sorting technique, the
+task assignment algorithms NIA, MMA, and SMMA can
+generate feasible paths for the drone and the truck to visit
+all the customers while satisfyin g every precedence constraint.
+The NIA, MMA, and SMMA can be adjusted to solve task
+assignment problems such as the TSP and the VRP , where the
+position on the vehicles鈥?current paths used to insert a target
+in each iteration can be anywhere if no precedence constraints
+apply.
+Now, we have presented all the theoretical results of this
+paper. In Section V , we carry out simulation studies.
+V. S
+IMULA TIONS
+Numerical simulations are carried out to test the pro-
+posed algorithms in comparison with the GAs [18], [19] for
+the precedence-constrained assi gnment problems. The genetic
+parameters for the compared GAs, named GA02 and GA
+to distinguish them, are set according to [18] and [19],
+respectively, as follows. For GA02, the maximum generation
+number is 500, the population size is 150, the crossover rate
+is 0.5, and the mutation rate is 0 .2 [18]. For GA, the maximum
+generation number is 2000, the population size is 20, the
+crossover rate is 0 .5, and the mutation rate is 0 .05 [19].
+All the experiments have been performed on an Intel Core
+i 5鈭?590 CPU 3.30 GHz with 8-GB RAM, and the algorithms
+are compiled by MA TLAB under Windows 7. Apart from
+evaluating the travel time f shown in (1), the solution quality
+of each algorithm is also quanti铿乪d by
+q = f
+fa
+(19)
+where fa is the sum of all the edge weights of an MCA of the
+weighted directed customer-vehicle graph Gd .S i n c e fa 鈮?fo,
+from Proposition 1 where fo is the maximal travel time of an
+optimal solution, the value of the ratio q closer to 1 means a
+better quality of the solution.
+The algorithms are 铿乺st tested on the TSP with precedence
+constraints where 40 target locations are subjected to the
+precedence constraints shown in Fig. 5, which is simpli铿乪d
+in [18, Fig. 11]. Ten scenarios of the initial positions of the
+targets and the vehicle are randomly generated in a square area
+with the edge length 10
+3 m. For each scenario, 20 trials of the
+
+===== PAGE 8 =====
+BAI et al. : EFFICIENT ROUTING FOR PRECEDENCE-CONSTRAINED P ACKAGE DELIVERY FOR HETEROGENEOUS VEHICLES 255
+Fig. 5. Digraph G p contains the precedence constraints on serving
+40 customers.
+TABLE I
+SOLUTION QUALITY q OF THE ALGORITHMS (A) FOR THE TSP W ITH
+PRECEDENCE CONSTRAINTS WITH 40 T ARGET LOCA TIONS SUBJECT
+TO THE PRECEDENCE CONSTRAINTS SHOWN IN FIG .5U NDER
+DIFFERENT SCENARIOS (I)
+TABLE II
+CORRESPONDING COMPUT A TION TIME (s) FOR THE ALGORITHMS (A) TO
+GET THE SOLUTION TO THE TSP W ITH PRECEDENCE CONSTRAINTS
+WITH 40 T ARGET LOCA TIONS SUBJECT TO THE PRECEDENCE
+CONSTRAINTS SHOWN IN FIG .5U NDER
+DIFFERENT SCENARIOS (I)
+GAs are performed to eliminate their randomness. The q of
+the proposed algorithms and the average q of the GAs on each
+scenario and the corresponding average computation time are
+shown in Tables I and II, respectively. First, GA is better than
+GA02 since its q values of every scenario shown in Table I
+are smaller than that of GA02. Second, GA is better than NIA
+as most of its q are smaller than that of NIA, and so does
+MMA to NIA. Finally, SMMA is the best algorithm among
+all the algorithms as it achieves the smallest q for most of the
+scenarios in Table I. Table II shows that the computation time
+of SMMA is a little bit longer t han those of MMA and NIA.
+However, the computation time is relatively short compared
+with those of the GAs.
+TABLE III
+AVERAGE TRA VEL TIME (S) ON 10 S CENARIOS ,R ESUL TING FROM THE
+ALGORITHMS (A), FOR THE VEHICLES TO DELIVER PACKAGES
+TO 40 C USTOMER LOCA TIONS SUBJECT TO THE PRECEDENCE
+CONSTRAINTS SHOWN IN FIG .5U NDER DIFFERENT
+OPERA TION RANGES L OF THE DRONE AND vd/vt = 1
+TABLE IV
+CORRESPONDING AVERAGE SOLUTION QUALITY q OF THE
+ALGORITHMS (A) ON 10 S CENARIOS FOR EMPLOYING THE
+VEHICLES TO DELIVER PACKAGES TO 40 C USTOMER LOCA TIONS
+SUBJECT TO THE PRECEDENCE CONSTRAINTS SHOWN IN
+FIG .5U NDER DIFFERENT OPERA TION RANGES L OF THE
+DRONE AND vd/vt = 1
+The designed algorithms are then tested on the task assign-
+ment problem PCHDP where 40 customer vertices are subject
+to the constraints shown in Fig. 5. Due to the better perfor-
+mance of GA over GA02, GA is used to compare the perfor-
+mance of the proposed algorithms. Ten scenarios of the initial
+positions of the customers are randomly generated in a square
+area with length L
+0 = 103 m, and there are 121 stopping
+point vertices evenly distributed in the area. The drone and the
+truck initially located at the origin are 铿乺st assumed to travel
+with the unit speed. For each scen ario, we test the algorithms鈥?
+performances when increasing the drone鈥檚 maximum 铿倅 dis-
+tance L. The average travel time to deliver packages to all the
+customers and the corresponding average q of the algorithms
+on the scenarios are shown in Tables III and IV, respectively.
+For the drone to deliver packages to all the customers while
+satisfying the precedence constraints, Table III 铿乺st shows
+that the average travel time resulting from each algorithm
+decreases with the increase in the drone鈥檚 operation range L.
+It is reasonable as the drone generally has more viable deploy-
+ment stopping point vertices for serving each customer when
+increasing its operation range, w hich leads to more ef铿乧ient
+paths for the drone to travel between two customers with the
+cooperation of the truck. The average q of the algorithms
+shown in Table IV always has the same changing trend as the
+average travel time when increasing the drone鈥檚 maximum 铿倅
+distance. This might be due to the smaller difference between
+the real travel time t(c
+r, c j) and t(cr, c j) s h o w ni n( 1 1 )
+when increasing the drone鈥檚 operation range. For every
+instance shown in Table IV, GA has the smaller q compared
+with NIA, but it has the largest q compared with MMA and
+SMMA, which veri铿乪s the satisfying performance of MMA
+and SMMA. Table IV also shows that SMMA performs better
+than MMA. That is because SMMA employs the predictive
+
+===== PAGE 9 =====
+256 IEEE TRANSACTIONS ON AUTOMA TION SCIENCE AND ENGINEERING, VOL. 17, NO. 1, JANUARY 2020
+Fig. 6. Box plots of the travel times (s) on 10 scenarios, resulting from
+the algorithms, for the vehicles to del iver packages to 40 customer locations
+subject to the precedence constraints shown in Fig. 5 under different operation
+ranges L of the drone and vd/vt = 1.
+TABLE V
+AVERAGE TRA VEL TIME (S) ON 10 S CENARIOS ,R ESUL TING FROM THE
+ALGORITHMS (A), FOR THE VEHICLES TO DELIVER PACKAGES TO 120
+CUSTOMER LOCA TIONS UNDER DIFFERENT OPERA TION RANGES L
+OF THE DRONE AND vd/vt = 1, W HERE EVERY CUSTOMER HAS
+ONL Y ONE PRECEDENCE CONSTRAINT REQUIRING IT TO BE
+SERVED EITHER BEFORE OR AFTER
+ANOTHER CUSTOMER
+strategy shown in (17) to determine the serving sequence
+of each customer. The box plots of the travel times for the
+vehicles to deliver packages to the 40 customers, and the box
+plots of the q of the algorithms on the ten scenarios are shown
+in Figs. 6 and 7, respectively. First, the box plots denoting
+the performance of GA and NIA shown in Figs. 6 and 7 are
+comparatively taller than that of MMA and SMMA where
+SMMA has the lowest box plots, which shows the better
+performance of MMA and SMMA as those illustrated in
+Tables III and IV. Second, when the drone鈥檚 operation range L
+increases, the box plots of the travel times resulting from the
+algorithms shown in Fig. 6 generally downgrade, which shows
+that the travel time resulting from each algorithm generally
+decreases with the increase in the drone鈥檚 operation range L.
+Third, Fig. 7 shows that the box plots of the corresponding
+solution quality q of MMA and SMMA do not vary much and
+are comparatively shorter compared with those of the other
+algorithms, which suggests that MMA and SMMA are more
+robust than the other algorithms.
+To further test the performance of the algorithms, simulation
+experiments are done on the problem with 120 customers
+where every customer has only one precedence constraint
+requiring it to be served either before or after another customer
+as in the DARP [21]. For the simulation, ten scenarios of
+Fig. 7. Box plots of the corresponding solution quality q of the algorithms
+on 10 scenarios for employing the vehicles to deliver packages to 40 customer
+locations subject to the precedence constraints shown in Fig. 5 under different
+operation ranges L of the drone and v
+d/vt = 1.
+TABLE VI
+CORRESPONDING AVERAGE SOLUTION QUALITY q OF THE
+ALGORITHMS (A) ON 10 S CENARIOS FOR EMPLOYING THE VEHICLES
+TO DELIVER PACKAGES TO 120 C USTOMER LOCA TIONS UNDER
+DIFFERENT OPERA TION RANGES L OF THE DRONE AND
+vd/vt = 1, W HERE EVERY CUSTOMER HAS ONL Y ONE
+PRECEDENCE CONSTRAINT REQUIRING IT TO BE
+SERVED EITHER BEFORE OR AFTER
+ANOTHER CUSTOMER
+the customers鈥?initial locati ons and destinations are randomly
+generated in the same square area with the same number
+of stopping point vertices. The drone and the truck are also
+assumed to travel with the unit speed. For each scenario, we
+test the algorithms鈥?performan ces when increasing the drone鈥檚
+operation range L. The average time to serve all the customers
+and the corresponding average q of the algorithms on the
+scenarios are shown in Tables V and VI, respectively. For
+every algorithm, Table V 铿乺st shows that the average travel
+time for the drone to deliver packages to all the customers
+generally decreases when increasing the drone鈥檚 operation
+range, which is the same compared with Table III. Table V
+also shows that the three proposed algorithms have a better
+performance compared with GA where their average q values
+are within twice of the optimal, as shown in Table VI. This
+again veri铿乪s the satisfyin g performance of MMA and SMMA.
+The box plots of the travel times for the vehicles to deliver
+packages to the 120 customers and the box plots of the q of
+the algorithms on the ten scenarios are shown in Figs. 8 and 9,
+respectively. First, the box plots denoting the performance of
+GA shown in Figs. 8 and 9 are comparatively taller than that
+of NIA, MMA, and SMMA where SMMA has the lowest box
+plots, which shows the better performance of NIA, MMA, and
+SMMA as those shown in Tables V and VI. Second, when
+
+===== PAGE 10 =====
+BAI et al. : EFFICIENT ROUTING FOR PRECEDENCE-CONSTRAINED P ACKAGE DELIVERY FOR HETEROGENEOUS VEHICLES 257
+Fig. 8. Box plots of the travel times (s) on 10 scenarios, resulting from
+the algorithms, for the vehicles to del iver packages to 120 customer locations
+under different operation ranges L of the drone and vd/vt = 1.0, where every
+customer has only one precedence constraint requiring it to be served either
+before or after another customer.
+Fig. 9. Box plots of the corresponding solution quality q of the algorithms
+on 10 scenarios for employing the vehicles to deliver packages to 120
+customer locations under dif ferent operation ranges L of the drone and
+v
+d/vt = 1.0, where every customer has only one precedence constraint
+requiring it to be served either before or after another customer.
+the drone鈥檚 operation range L increases, the box plots of the
+travel times resulting from the algorithms shown in Fig. 8
+generally downgrade, which is the same as shown in Fig. 6.
+Third, Fig. 9 shows that the box plots of the corresponding
+solution quality q of NIA, MMA, and SMMA do not vary
+much and are comparatively shorter compared with those of
+GA, which suggests that NIA, MMA, and SMMA are more
+robust than GA for these experiments with a large problem
+size.
+Finally, for the same environment setup for the 120 cus-
+tomers, we investigate the al gorithms鈥?performances when
+increasing both the drone鈥檚 铿倅 speed v
+d and maximum 铿倅
+distance L. The truck is assumed to travel with the unit speed
+as vt = 1, while the drone鈥檚 speed is increased to vd/vt = 1.4.
+The average time to deliver p ackages to all the customers
+and the corresponding average q of the algorithms on the ten
+scenarios are shown in Tables VII and VIII, respectively. For
+TABLE VII
+AVERAGE TRA VEL TIME (S) ON 10 S CENARIOS ,R ESUL TING FROM THE
+ALGORITHMS (A), FOR THE VEHICLES TO DELIVER PACKAGES TO 120
+CUSTOMER LOCA TIONS UNDER DIFFERENT OPERA TION RANGES
+L OF THE DRONE AND vd/vt = 1.4, W HERE EVERY CUSTOMER
+HAS ONL Y ONE PRECEDENCE CONSTRAINT REQUIRING IT
+TO BE SERVED EITHER BEFORE OR AFTER
+ANOTHER CUSTOMER
+TABLE VIII
+CORRESPONDING AVERAGE SOLUTION QUALITY q OF THE ALGORITHMS
+(A) ON 10 S CENARIOS FOR EMPLOYING THE VEHICLES TO DELIVER
+PACKAGES TO 120 C USTOMER LOCA TIONS UNDER DIFFERENT
+OPERA TION RANGES L OF THE DRONE AND vd/vt = 1.4,
+WHERE EVERY CUSTOMER HAS ONL Y ONE PRECEDENCE
+CONSTRAINT REQUIRING IT TO BE SERVED EITHER
+BEFORE OR AFTER ANOTHER CUSTOMER
+each algorithm, the average travel time shown in Table VII also
+decreases with the increase in the drone鈥檚 operation range L.
+Table VII also shows that NIA, MMA, and SMMA have better
+performance compared with GA, and Table VIII shows that
+the average q values of MMA and SMMA are still within
+twice of the optimal, which veri铿乪s the superior performance
+of MMA and SMMA.
+Tables V and VII show that the drone鈥檚 average travel
+time to serve all the customers decreases more rapidly when
+increasing the drone鈥檚 speed in comparison with increasing its
+maximum 铿倅 distance. This is because the time for the drone
+to travel between two custome rs decreases when increasing
+its speed, which directly leads to the decrease in the total
+time to serve all the customers. However, the drone鈥檚 speed
+cannot be increased too much to ensure safety when delivering
+the parcels in the city. Meanwhile, increasing the drone鈥檚
+operation range might not necessarily decrease its total travel
+time as the drone needs to return to the truck to be recharged
+with parcel after serving each customer. In Table IX, we
+also show the corresponding average computation time for
+the algorithms to achieve the solutions shown in Table VII.
+Table IX shows that the average computation time of GA is far
+larger than those of NIA, MMA, and SMMA where SMMA is
+most time-consuming among the proposed algorithms, as indi-
+cated in Section IV -C. Concluding from the above-mentioned
+analysis, MMA and SMMA are more ef铿乧ient than NIA and
+GA in every instance, while SMMA performs better than
+MMA. However, SMMA needs more computation time than
+MMA. Then, it is suggested to use MMA for planning the
+routes for the vehicles online a s it can achieve the satisfying
+solution under short computation time while using SMMA
+
+===== PAGE 11 =====
+258 IEEE TRANSACTIONS ON AUTOMA TION SCIENCE AND ENGINEERING, VOL. 17, NO. 1, JANUARY 2020
+TABLE IX
+CORRESPONDING AVERAGE COMPUT A TION TIME (S) FOR THE
+ALGORITHMS TO PLAN THE PA THS FOR THE VEHICLES TO DELIVER
+PACKAGES TO 120 C USTOMER LOCA TIONS UNDER DIFFERENT
+OPERA TION RANGES L OF THE DRONE AND vd/vt = 1.4,
+WHERE EVERY CUSTOMER HAS ONL Y ONE PRECEDENCE
+CONSTRAINT REQUIRING IT TO BE SERVED EITHER
+BEFORE OR AFTER ANOTHER CUSTOMER
+Fig. 10. Box plots of the travel times (s) on 10 scenarios, resulting from
+the algorithms, for the vehicles to del iver packages to 120 customer locations
+under different operation ranges L of the drone and v
+d/vt = 1.4, where every
+customer has only one precedence constraint requiring it to be served either
+before or after another customer.
+Fig. 11. Box plots of the corresponding solution quality q of the algorithms
+on 10 scenarios for employing the vehicles to deliver packages to 120
+customer locations under dif ferent operation ranges L of the drone and
+vd/vt = 1.4, where every customer has only one precedence constraint
+requiring it to be served either before or after another customer.
+if more computation time is allowed as it offers a better
+solution. The box plots of the travel times for the vehicles
+to deliver packages to the 120 customers and the box plots
+of the q of the algorithms on the ten scenarios are shown in
+Figs. 10 and 11, which show the same changing trend as shown
+in Figs. 8 and 9.
+Fig. 12. Paths resulting from SMMA for the truck and the drone to deliver
+packages to 20 customers subject to the precedence constraints shown in
+Fig. 5, where L = 250 m, v
+d = 30 km/h, and vt = 40 km/h. The total travel
+time of the drone is 1849 .6s .
+Fig. 13. Paths resulting from SMMA for the truck and the drone to deliver
+packages to 20 customers subject to the precedence constraints shown in
+Fig. 5, where L = 300 m, vd = 30 km/h, and vt = 40 km/h. The total travel
+time of the drone is 1775 .9s .
+Figs. 12 and 13 show a realistic package delivery scenario
+on a Google street map of a residential neighborhood in
+Groningen, The Netherlands. The neighborhood considered
+is a residential area outside the busy city center, but it is not
+too far away from the city鈥檚 high-speed ring road. Therefore,
+it is an ideal test area for the possible coordination between
+the truck and the drone. For each of the drone鈥檚 landing on a
+delivery/customer point or each of its loading of one package
+on the truck, we assume that a l anding time of 30 s is needed.
+We assume that the speeds of the drone and the truck are
+v
+d = 30 km/h and vt = 40 km/h, respectively. Fig. 12 shows
+the paths for the truck and the drone to deliver packages to
+20 customers where the sequences for serving the customers
+respect the precedence constraints shown in Fig. 5 and L =
+250 m. The total time for the drone and the truck to serve all
+the customers is 1849 .6 s, which is approximately a reduction
+of 10% in the time to serve all the customers by using a single
+delivery truck. Fig. 13 shows the paths for the truck and the
+drone to serve all the customers where the drone鈥檚 maximum
+铿俰ght range is increased to L = 300 m. The total time for
+
+===== PAGE 12 =====
+BAI et al. : EFFICIENT ROUTING FOR PRECEDENCE-CONSTRAINED P ACKAGE DELIVERY FOR HETEROGENEOUS VEHICLES 259
+the drone and the truck to serve all the customers is 1775 .9s .
+It is worth mentioning that the time to deliver packages to the
+20 customers decreases in the two scenarios even though the
+sequences for serving the customers are the same, which is
+due to the increase in the drone鈥檚 operation range.
+VI. C
+ONCLUSION
+In this paper, we have investigated the precedence-
+constrained package delivery problem where one drone
+coordinates with one truck to ef铿乧iently deliver parcels to a
+set of customers while satisfyin g the precedence constraints
+on visiting the customers. The problem has been shown
+to be NP-hard, and a lower bound on the minimum time
+to serve all the customers has been found. Integrated with
+a topological sorting technique, we have designed several
+heuristic task assignment algorithms. The numerical experi-
+ments have shown that the proposed algorithms can quickly
+obtain satisfying solutions to th e precedence-constrained task
+assignment problem compared with the existing GA. The
+proposed algorithms will be extended to the precedence-
+constrained package delivery with one truck coordinating with
+multiple drones. Another research direction is to investigate
+the precedence-constrained p ackage delivery with one truck
+coordinating with one drone where the drone can deliver
+multiple packages in one run.
+R
+EFERENCES
+[1] C.-H. Fua and S. S. Ge, 鈥淐OBOS: C ooperative backoff adaptive scheme
+for multirobot task allocation,鈥?IEEE Trans. Robot. , vol. 21, no. 6,
+pp. 1168鈥?178, Dec. 2005.
+[2] S. L. Smith and F. Bullo, 鈥淢onotonic target assignment for robotic
+networks,鈥?IEEE Trans. Autom. Control , vol. 54, no. 9, pp. 2042鈥?057,
+Sep. 2009.
+[3] B. Chen and H. H. Cheng, 鈥淎 revi ew of the applications of agent
+technology in traf铿乧 and transportation systems,鈥?IEEE Trans. Intell.
+Transp. Syst., vol. 11, no. 2, pp. 485鈥?97, Jun. 2010.
+[4] J. Y u, S.-J. Chung, and P . G. V oulgaris, 鈥淭arget assignment in robotic
+networks: Distance optimality guarantees and hierarchical strategies,鈥?
+IEEE Trans. Autom. Control , vol. 60, no. 2, pp. 327鈥?41, Feb. 2015.
+[5] X. Bai, W. Y an, S. S. Ge, and M. C ao, 鈥淎n integrated multi-population
+genetic algorithm for multi-vehicle task assignment in a drift 铿乪ld,鈥?Inf.
+Sci., vol. 453, pp. 227鈥?38, Jul. 2018.
+[6] X. Bai, W. Y an, M. Cao, and D. Xue, 鈥淒istributed multi-vehicle task
+assignment in a time-invariant drift 铿乪ld with obstacles,鈥?IET Control
+Theory Appl. , p. 8, Jan. 2019. doi: 10.1049/iet-cta.2018.6125.
+[ 7 ] E .L .L a w l e ret al., The Traveling Salesman Problem: A Guided Tour of
+Combinatorial Optimization. vol. 3. New Y ork, NY , USA: Wiley, 1985.
+[ 8 ] J .K .L e n s t r aa n dA .H .G .R .K a n ,鈥?C o m p l e x i t yo fv e h i c l er o u t i n ga n d
+scheduling problems,鈥?Networks, vol. 11, no. 2, pp. 221鈥?27, Jun. 1981.
+[9] E. Morganti, S. Seidel, C. Blanqua rt, L. Dablanc, and B. Lenz, 鈥淭he
+impact of e-commerce on 铿乶al deliveries: Alternative parcel deliv-
+ery services in France and Germany,鈥?Transp. Res. Procedia ,v o l .4 ,
+pp. 178鈥?90, Jan. 2014.
+[10] D. Floreano and R. J. Wood, 鈥淪cience, technology and the future of
+small autonomous drones,鈥?Nature, vol. 521, no. 7553, pp. 460鈥?66,
+May 2015.
+[11] N. Mathew, S. L. Smith, and S. L. Waslander, 鈥淧lanning paths for
+package delivery in heterogeneous multirobot teams,鈥?IEEE Trans.
+Autom. Sci. Eng. , vol. 12, no. 4, pp. 1298鈥?308, Oct. 2015.
+[12] C. C. Murray and A. G. Chu, 鈥淭he 铿倅ing sidekick traveling salesman
+problem: Optimization of drone-assisted parcel delivery,鈥?Transp. Res. C,
+Emerg. Technol., vol. 54, pp. 86鈥?09, May 2015.
+[13] H. Savuran and M. Karakaya, 鈥淓f铿乧ient route planning for an unmanned
+air vehicle deployed on a moving carrier,鈥?Soft Comput. , vol. 20, no. 7,
+pp. 2905鈥?920, Jul. 2016.
+[14] X. Wang, S. Poikonen, and B. Golden, 鈥淭he vehicle routing problem
+with drones: Several worst-case results,鈥?Optim. Lett. , vol. 11, no. 4,
+pp. 679鈥?97, Apr. 2017.
+[15] V . S. Gordon, C. N. Potts, V . A. Strusevich, and J. D. Whitehead, 鈥淪ingle
+machine scheduling models with deterioration and learning: Handling
+precedence constraints via priority generation,鈥?J. Scheduling , vol. 11,
+no. 5, p. 357, Oct. 2008.
+[16] F. Pezzella, G. Morganti, and G. Ciaschetti, 鈥淎 genetic algorithm for
+the 铿俥xible job-shop scheduling problem,鈥?Comput. Oper . Res., vol. 35,
+no. 10, pp. 3202鈥?212, Oct. 2008.
+[17] D. Bredstr枚m and M. R枚nnqvist, 鈥淐ombined vehicle routing and
+scheduling with temporal precedence and synchronization con-
+straints,鈥?Eur . J. Oper . Res. , vol. 191, no. 1, pp. 19鈥?1,
+Nov. 2008.
+[18] C. Moon, J. Kim, G. Choi, and Y . Seo, 鈥淎n ef铿乧ient genetic
+algorithm for the traveling salesman problem with precedence
+constraints,鈥?Eur . J. Oper . Res. , vol. 140, no. 3, pp. 606鈥?17,
+Aug. 2002.
+[19] Y . Y un and C. Moon, 鈥淕enetic algorithm approach for precedence-
+constrained sequencing problems,鈥?J. Intell. Manuf. , vol. 22, no. 3,
+pp. 379鈥?88, Jun. 2011.
+[20] H.-J. B枚ckenhauer, T. M枚mke, and M. Steinov谩, 鈥淚mproved approx-
+imations for TSP with simple precedence constraints,鈥?J. Discrete
+Algorithms, vol. 21, pp. 32鈥?0, 2013.
+[21] J.-F. Cordeau and G. Laporte, 鈥淭he dial-a-ride problem: Models and
+algorithms,鈥?Ann. Oper . Res., vol. 153, no. 1, pp. 29鈥?6, Sep. 2007.
+[22] M. W. Savelsbergh and M. Sol, 鈥淭he general pickup and delivery
+problem,鈥?Transp. Sci., vol. 29, no. 1, pp. 17鈥?9, Feb. 1995.
+[23] S. Ropke and D. Pisinger, 鈥淎n a daptive large neighborhood search
+heuristic for the pickup and delivery problem with time windows,鈥?
+Transp. Sci., vol. 40, no. 4, pp. 455鈥?72, Nov. 2006.
+[24] S. Chopra and M. Egerstedt, 鈥淪patio-temporal multi-robot routing,鈥?
+Automatica, vol. 60, pp. 173鈥?81, Oct. 2015.
+[25] M. Nowak, M. Hewitt, and C. C. White, III, 鈥淧recedence constrained
+pickup and delivery with split loads,鈥?Int. J. Logistics Res. Appl. , vol. 15,
+no. 1, pp. 1鈥?4, Feb. 2012.
+[26] L. F. Escudero, 鈥淎n inexact algorithm for the sequential ordering
+problem,鈥?Eur . J. Oper . Res., vol. 37, no. 2, pp. 236鈥?49, Nov. 1988.
+[27] G. Steiner, 鈥淥n the complexity of dynamic programming for sequencing
+problems with precedence constraints,鈥?Ann. Oper . Res., vol. 26, no. 1,
+pp. 103鈥?23, Dec. 1990.
+[28] T. Shima, S. J. Rasmussen, A. G. Sparks, and K. M. Passino, 鈥淢ultiple
+task assignments for cooperating uni nhabited aerial vehicles using
+genetic algorithms,鈥?Comput. Oper . Res., vol. 33, no. 11, pp. 3252鈥?269,
+Nov. 2006.
+[29] S. G. Williamson, Combinatorics for Computer Science . Rockville, MD,
+USA: Computer Science Press, 1985.
+[30] S. Mourelo Ferrandez, T. Harbison, T. Webwer,
+R. Sturges, and R. Rich, 鈥淥ptimization of a truck-drone in tandem
+delivery network using k-means and genetic algorithm,鈥?J. Ind. Eng.
+Manage., vol. 9, no. 2, pp. 374鈥?88, 2016.
+[31] S. Poikonen, X. Wang, and B. Golden, 鈥淭he vehicle routing problem
+with drones: Extended models and connections,鈥?Networks, vol. 70,
+no. 1, pp. 34鈥?3, Aug. 2017.
+[32] M. R. Garey and D. S. Johnson, Computers and Intractability , vol. 29.
+New Y ork, NY , USA: Freeman, 2002.
+[33] G. N. Frederickson, M. S. Hecht, and C. E. Kim, 鈥淎pproximation
+algorithms for some routing problems,鈥?in Proc. 17th Annu. Symp.
+F ound. Comput. Sci., Oct. 1976, pp. 216鈥?27.
+[34] J. Edmonds, 鈥淥ptimum branchings,鈥?in Mathematics Decision Sciences ,
+vol. 1. Providence, RI, USA: American Mathematical Society, 1968,
+pp. 335鈥?45.
+[35] M. A. Weiss, Data Structures and Algorithm Analysis in C . Redwood
+City, CA, USA: Benjamin-Cummings, 1993.
+Xiaoshan Bai received the Ph.D. degree in sys-
+tems engineering from the University of Groningen,
+Groningen, The Netherla nds, in 2018. He has taken
+a successive master鈥揹octor program at Northwestern
+Polytechnical University, Xi鈥檃n, China, since Sep-
+tember 2012.
+In January to July 2015, he was a Research Fellow
+with the Department of Electrical and Computer
+Engineering, National Uni versity of Singapore, Sin-
+gapore. Since November 2018, he has been with the
+Faculty of Science and Engineering, University of
+Groningen, where he is currently a Lecturer. His main research interests
+include multi-vehicle/robot task assignment, logistic scheduling, and vehicle
+path planning.
+
+===== PAGE 13 =====
+260 IEEE TRANSACTIONS ON AUTOMA TION SCIENCE AND ENGINEERING, VOL. 17, NO. 1, JANUARY 2020
+Ming Cao (S鈥?2鈥揗鈥?8鈥揝M鈥?6) received the bache-
+lor鈥檚 and master鈥檚 degrees from Tsinghua University,
+Beijing, China, in 1999 and 2002, respectively, and
+the Ph.D. degree from Y ale University, New Haven,
+CT, USA, in 2007, all in electrical engineering.
+In 2006, he was a Research Intern with the Math-
+ematical Sciences Department, IBM T. J. Watson
+Research Center, Y orktown Heights, NY , USA. From
+September 2007 to August 2008 he was a Post-
+Doctoral Research Associate with the Department of
+Mechanical and Aerospace Engineering, Princeton
+University, Princeton, NJ, USA. In 2008, he was a tenure-track Assistant
+Professor with the Engineering and Technology Institute (ENTEG), University
+of Groningen, Groningen, Th e Netherlands, where he is currently a Professor
+in systems and control. His main research interests are in autonomous agents
+and multiagent systems, mobile sensor networks, and complex networks.
+Dr. Cao was a recipient of the European Control Award sponsored by the
+European Control Association (EUCA ) in 2016 and an inaugural recipient of
+the Manfred Thoma Medal from the International Federation of Automatic
+Control (IFAC) in 2017. He is also the Vice Chair of the IFAC Technical
+Committee on Large-Scale Complex Systems. He is an Associate Editor
+of the IEEE T
+RANSACTIONS ON AUTOMA TIC CONTROL and the IEEE
+TRANSACTIONS ON CIRCUITS AND SYSTEMS and a Senior Editor of Systems
+and Control Letters .
+Weisheng Yan received the B.Sc., M.Sc., and Ph.D.
+degrees in mechanical engineering and automatic
+control from Northwestern Polytechnical University
+(NWPU), Xi鈥檃n, China, in 1990, 1993, and 1999,
+respectively.
+Since 1993, he has been with the Department of
+Mechanical Engineering and Automation, School of
+Marine Science and Tec hnology, NWPU, where he
+was a Lecturer in 1993, an Associate Professor in
+1999, and a Full Professor in 2003. From 2003
+to 2013, he was the Dean of the Department of
+Mechanical Engineering and Auto mation, NWPU. Since 2013, he has been
+serving as the Associate Dean of the S chool of Marine Scie nce and Technol-
+ogy. His main research interests are in advanced control theory and control
+of underwater vehicles.
+Shuzhi Sam Ge (S鈥?0鈥揗鈥?2鈥揝M鈥?0鈥揊鈥?6)
+received the B.Sc. degree from the Beijing
+University of Aeronautics and Astronautics,
+Beijing, China, in 1986, and the Ph.D. degree from
+Imperial College, London, U.K., in 1993.
+He is currently the Director of the Social Robotics
+Laboratory, Interactive Digital Media Institute,
+Singapore, and the Centre for Robotics, Chengdu,
+China, and a Professor with the Department of
+Electrical and Computer Engineering, National
+University of Singapore, Singapore, on leave from
+the School of Computer Science and Engi neering, University of Electronic
+Science and Technology of China, Chengdu. He has coauthored four
+books and more than 300 international j ournal and conference papers. His
+current research interests include social robotics, adaptive control, intelligent
+systems, and arti铿乧ial intelligence.
+Dr. Ge is a fellow of the International Federation of Automatic Control, the
+Institution of Engineering and Technology, and the Society of Automotive
+Engineering. From 2007 to 2009, he has served as a member of the Board
+of Governors at the IEEE Control Systems Society, where he was the Vice
+President for Technical Activities from 2009 to 2010 and the Vice President
+of Membership Activities from 2011 to 2012. He has served/been serving as
+an Associate Editor for a number of 铿俛gship journals, including the IEEE
+T
+RANSACTIONS ON AUTOMA TIC CONTROL , the IEEE T RANSACTIONS
+ON CONTROL SYSTEMS TECHNOLOGY , the IEEE T RANSACTIONS ON
+NEURAL NETWORKS ,a n d Automatica. He serves as a Book Editor for the
+Taylor and Francis Automation and Control Engineering Series. He is the
+Editor-in-Chief of the International Journal of Social Robotics (Springer).
